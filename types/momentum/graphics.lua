@@ -22,6 +22,21 @@ function momentum.graphics.newImage(path) end
 ---@param image MomentumImage
 function momentum.graphics.deleteImage(image) end
 
+function momentum.graphics.push() end
+
+function momentum.graphics.pop() end
+
+---@param x number
+---@param y number
+function momentum.graphics.translate(x, y) end
+
+---@param a number
+function momentum.graphics.rotate(a) end
+
+---@param x number
+---@param y number
+function momentum.graphics.scale(x, y) end
+
 ---@param text string
 ---@param x number
 ---@param y number

@@ -2,15 +2,58 @@
 #include <lauxlib.h>
 #include <lualib.h>
 #include <raylib.h>
+#include <raymath.h>
+#include <rlgl.h>
 #include "momentum_graphics.h"
+
+static MomentumTransformStack g_transform = {0};
+
+static void initTransformStack() {
+    g_transform.top = 0;
+    g_transform.stack[0] = MatrixIdentity();
+}
+
+static void pushTransform() {
+    if (g_transform.top < MOMENTUM_TRANSFORM_STACK_SIZE - 1) {
+        g_transform.stack[g_transform.top + 1] = g_transform.stack[g_transform.top];
+        g_transform.top++;
+    }
+}
+
+static void popTransform() {
+    if (g_transform.top > 0) {
+        g_transform.top--;
+    }
+}
+
+static void translateTransform(double x, double y) {
+    Matrix t = MatrixTranslate(x, y, 0);
+    g_transform.stack[g_transform.top] = MatrixMultiply(t, g_transform.stack[g_transform.top]);
+}
+
+static void rotateTransform(double a) {
+    Matrix t = MatrixRotateZ(a);
+    g_transform.stack[g_transform.top] = MatrixMultiply(t, g_transform.stack[g_transform.top]);
+}
+
+static void scaleTransform(double x, double y) {
+    Matrix t = MatrixScale(x, y, 1);
+    g_transform.stack[g_transform.top] = MatrixMultiply(t, g_transform.stack[g_transform.top]);
+}
+
+static void applyTransform() {
+    rlMultMatrixf(MatrixToFloat(g_transform.stack[g_transform.top]));
+}
 
 int momentum_graphics_beginDrawing(lua_State *L) {
     BeginDrawing();
+    rlPushMatrix();
 
     return 0;
 }
 
 int momentum_graphics_endDrawing(lua_State *L) {
+    rlPopMatrix();
     EndDrawing();
 
     return 0;
@@ -42,6 +85,49 @@ int momentum_graphics_deleteImage(lua_State *L) {
     MomentumImage *image = luaL_checkudata(L, 1, "MomentumImage");
 
     UnloadTexture(image->texture);
+
+    return 0;
+}
+
+int momentum_graphics_push(lua_State *L) {
+    pushTransform();
+    applyTransform();
+
+    return 0;
+}
+
+int momentum_graphics_pop(lua_State *L) {
+    popTransform();
+    applyTransform();
+
+    return 0;
+}
+
+int momentum_graphics_translate(lua_State *L) {
+    double x = luaL_checknumber(L, 1);
+    double y = luaL_checknumber(L, 2);
+
+    translateTransform(x, y);
+    applyTransform();
+
+    return 0;
+}
+
+int momentum_graphics_rotate(lua_State *L) {
+    double a = luaL_checknumber(L, 1);
+
+    rotateTransform(a);
+    applyTransform();
+    
+    return 0;
+}
+
+int momentum_graphics_scale(lua_State *L) {
+    double x = luaL_checknumber(L, 1);
+    double y = luaL_checknumber(L, 2);
+
+    scaleTransform(x, y);
+    applyTransform();
 
     return 0;
 }
@@ -110,6 +196,11 @@ const luaL_Reg momentum_graphics_reg[] = {
     {"clearBackground", momentum_graphics_clearBackground},
     {"newImage", momentum_graphics_newImage},
     {"deleteImage", momentum_graphics_deleteImage},
+    {"push", momentum_graphics_push},
+    {"pop", momentum_graphics_pop},
+    {"translate", momentum_graphics_translate},
+    {"rotate", momentum_graphics_rotate},
+    {"scale", momentum_graphics_scale},
     {"drawText", momentum_graphics_drawText},
     {"drawCircle", momentum_graphics_drawCircle},
     {"drawRectangle", momentum_graphics_drawRectangle},
@@ -118,6 +209,7 @@ const luaL_Reg momentum_graphics_reg[] = {
 };
 
 int luaopen_momentum_graphics(lua_State *L) {
+    initTransformStack();
     luaL_newmetatable(L, "MomentumImage");
     lua_pushcfunction(L, momentum_graphics_deleteImage);
     lua_setfield(L, -2, "__gc");

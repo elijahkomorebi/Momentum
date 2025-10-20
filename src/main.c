@@ -6,6 +6,7 @@
 #include "momentum.h"
 
 int main() {
+    SetTraceLogLevel(LOG_NONE);
     InitWindow(800, 600, "Momentum");
     SetExitKey(0);
 

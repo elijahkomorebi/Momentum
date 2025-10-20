@@ -11,14 +11,20 @@ momentum.window.setTargetFPS(60)
 print(momentum.lua.version())
 
 return function()
+    local deltaTime = momentum.time.getDelta()
+
     momentum.graphics.beginDrawing()
     momentum.graphics.clearBackground(0, 0, 0, 255)
+
+    momentum.graphics.translate(math.sin(os.clock() * 100), 0)
+    momentum.graphics.rotate(deltaTime)
+    momentum.graphics.push()
+    momentum.graphics.scale((math.sin(os.clock() * 100) + 1) / 2, 1)
 
     local direction = {
         x = 0,
         y = 0
     }
-    local deltaTime = momentum.time.getDelta()
 
     if momentum.input.isKeyDown(87) then
         direction.y = direction.y - 1
@@ -47,7 +53,7 @@ return function()
     player.x = player.x + direction.x * deltaTime * player.speed
     player.y = player.y + direction.y * deltaTime * player.speed
 
-    momentum.graphics.drawCircle(player.x, player.y, player.radius, 255, 255, 255, 255)
+    momentum.graphics.drawCircle(100, 100, player.radius, 255, 255, 255, 255)
     momentum.graphics.drawText(tostring(1 / momentum.time.getDelta()), momentum.input.getMouseX(), momentum.input.getMouseY(), 20, 255, 255, 0, 255)
 
     if momentum.input.isMouseDown(0) then
@@ -58,6 +64,8 @@ return function()
 
     momentum.graphics.drawImage(image, 100, 100, 255, 255, 255, 255)
     momentum.graphics.drawText(tostring(momentum.lua.memory()), 0, 0, 50, 255, 0, 0, 255)
+
+    momentum.graphics.pop()
 
     momentum.graphics.endDrawing()
 end
