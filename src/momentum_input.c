@@ -16,6 +16,18 @@ int momentum_input_isKeyDown(lua_State *L) {
     return 1;
 }
 
+int momentum_input_isMouseDown(lua_State *L) {
+    int button = luaL_checkinteger(L, 1);
+
+    if (IsMouseButtonDown(button)) {
+        lua_pushboolean(L, 1);
+    } else {
+        lua_pushboolean(L, 0);
+    }
+    
+    return 1;
+}
+
 int momentum_input_getMouseX(lua_State *L) {
     lua_pushinteger(L, GetMouseX());
 
@@ -30,6 +42,7 @@ int momentum_input_getMouseY(lua_State *L) {
 
 const luaL_Reg momentum_input_reg[] = {
     {"isKeyDown", momentum_input_isKeyDown},
+    {"isMouseDown", momentum_input_isMouseDown},
     {"getMouseX", momentum_input_getMouseX},
     {"getMouseY", momentum_input_getMouseY},
     {NULL, NULL}

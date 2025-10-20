@@ -7,6 +7,7 @@
 
 int main() {
     InitWindow(800, 600, "Momentum");
+    SetExitKey(0);
 
     lua_State *L = luaL_newstate();
 

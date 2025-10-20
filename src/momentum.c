@@ -5,6 +5,7 @@
 #include "momentum_graphics.h"
 #include "momentum_time.h"
 #include "momentum_input.h"
+#include "momentum_lua.h"
 
 int luaopen_momentum(lua_State *L) {
     lua_newtable(L);
@@ -17,6 +18,8 @@ int luaopen_momentum(lua_State *L) {
     lua_setfield(L, -2, "time");
     luaopen_momentum_input(L);
     lua_setfield(L, -2, "input");
+    luaopen_momentum_lua(L);
+    lua_setfield(L, -2, "lua");
 
     return 1;
 }

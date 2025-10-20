@@ -7,6 +7,10 @@ momentum.input = {}
 ---@return boolean
 function momentum.input.isKeyDown(key) end
 
+---@param button integer
+---@return boolean
+function momentum.input.isMouseDown(button) end
+
 ---@return integer
 function momentum.input.getMouseX() end
 

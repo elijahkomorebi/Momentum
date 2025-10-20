@@ -11,7 +11,7 @@ int momentum_window_close(lua_State *L) {
 }
 
 int momentum_window_setTargetFPS(lua_State *L) {
-    int targetFPS = luaL_checkinteger(L, 1);
+    int targetFPS = luaL_checknumber(L, 1);
 
     SetTargetFPS(targetFPS);
 
@@ -19,13 +19,13 @@ int momentum_window_setTargetFPS(lua_State *L) {
 }
 
 int momentum_window_getWidth(lua_State *L) {
-    lua_pushinteger(L, GetScreenWidth());
+    lua_pushnumber(L, GetScreenWidth());
 
     return 1;
 }
 
 int momentum_window_getHeight(lua_State *L) {
-    lua_pushinteger(L, GetScreenHeight());
+    lua_pushnumber(L, GetScreenHeight());
 
     return 1;
 }

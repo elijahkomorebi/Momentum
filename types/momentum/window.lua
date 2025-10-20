@@ -5,11 +5,11 @@ momentum.window = {}
 
 function momentum.window.close() end
 
----@param targetFPS integer
+---@param targetFPS number
 function momentum.window.setTargetFPS(targetFPS) end
 
----@return integer
+---@return number
 function momentum.window.getWidth() end
 
----@return integer
+---@return number
 function momentum.window.getHeight() end

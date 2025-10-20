@@ -7,6 +7,7 @@
 
 int luaopen_momentum_input(lua_State *L);
 int momentum_input_isKeyDown(lua_State *L);
+int momentum_input_isMouseDown(lua_State *L);
 int momentum_input_getMouseX(lua_State *L);
 int momentum_input_getMouseY(lua_State *L);
 
